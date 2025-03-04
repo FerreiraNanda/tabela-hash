@@ -7,7 +7,7 @@ Tab_hash * cria(int tam);
 int mult(int chave, int tam);
 int divisao(int chave, int tam);
 
-int duploHash (int h1, int chave, int i, int tam);
+int duploHash (int chave, int i, int tam);
 
 float fatorCarga(Tab_hash* th);
 
