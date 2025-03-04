@@ -6,9 +6,10 @@ int main(){
 
     int tam, opcao, chave, func, mColisao, escolha;
     char arquivo[1024];
-    Tab_hash *th = cria(tam);
+    Tab_hash *th;
 
     printf("Escolha a funcao de dispersao:\n");
+
     printf("0 - Divisao \n1 - Multiplicacao\n");
 
     if (scanf("%d", &func) != 1) {
@@ -17,11 +18,11 @@ int main(){
     }else if(func != 0 && func != 1){
         printf("Erro: Entrada invalida.\n");
         exit(1);
-    }
+    }   
 
     printf("Informe o tratamento de colisao: \n");
     printf("0 - Enderecamento aberto \n1 - Encadeamento\n");
-
+   
     if (scanf("%d", &mColisao) != 1) {
         printf("Erro: Entrada invalida.\n");
         exit(1);
@@ -35,42 +36,11 @@ int main(){
     scanf("%d", &escolha);
 
     if(escolha == 0){
-        int x;
-        int elementos = 0;
+
         printf("Digite o tamanho da tabela:\n");
         scanf("%d", &tam);
+        th = cria(tam);
 
-        do{
-            if(elementos >= tam){
-                printf("Quantidade de elementos atingiu o tamanho maximo da tabela!\n");
-                break;
-            }
-            printf("Digite a chave para insercao: \n");
-            scanf("%d", &chave);
-
-            if (scanf("%d", &chave) != 1) {
-                printf("Erro: Entrada invalida.\n");
-
-                while (getchar() != '\n');
-                continue; 
-            }
-            if(mColisao == 0){
-                insere_enderecamento_aberto(th, chave, func);
-             }else if (mColisao == 1){
-                insere_hash_encadeamento(th, func, chave);
-             }
-             elementos++;
-             printf("\nDeseja continuar a insercao?\n");
-            printf("0 - Continuar insercao \n1 - Parar insercao\n");
-
-            if (scanf("%d", &x) != 1) {
-                printf("Erro: Entrada invalida.\n");
-
-                while (getchar() != '\n');
-                continue; 
-            }
-
-        }while( x!=1);
     }else if (escolha == 1){
 
         printf("Digite o nome do arquivo:\n");
@@ -83,33 +53,44 @@ int main(){
          }
 
     }else{
-        printf("Opçao invalida!\n");
+        printf("Opção inválida!\n");
         return 0;
     }
     while(1){
-        printf("\n\n ----------MENU-----------\n");
-        printf("1 - Remover Elemento\n");
-        printf("2 - Buscar Elemento\n");
-        printf("3 - Imprimir tabela (enderecamento aberto)\n");
-        printf("4 - Imprimir tabela (encadeamento)\n");
-        printf("5 - Sair\n");
+
+        printf("\n\n ----------MENU----------\n");
+        printf("1 - Inserir Elemento manualmente\n");
+        printf("2 - Remover Elemento\n");
+        printf("3 - Buscar Elemento\n");
+        printf("4 - Imprimir tabela (enderecamento aberto)\n");
+        printf("5 - Imprimir tabela (encadeamento)\n");
+        printf("6 - Sair\n");
         printf("\nEscolha uma das opcoes acima: \n");
         scanf("%d", &opcao);
     
     
         switch (opcao){
-
             case 1: 
-            printf("Digite o valor para remocao: \n");
-            scanf("%d", &chave);
 
+            printf("Digite a chave para insercao: \n");
+            scanf("%d", &chave);
+         
+            if(mColisao == 0){
+                insere_enderecamento_aberto(th, chave, func);
+            }else if (mColisao == 1){
+                insere_hash_encadeamento(th, func, chave);
+            }
+            break;
+            case 2: 
+            printf("Digite o valor para remocao: \n");
+           
             if (scanf("%d", &chave) != 1) {
                 printf("\nErro: Entrada invalida.\n");
 
                 while (getchar() != '\n');
                 continue;
-            }
-            if(mColisao == 0){
+
+            }if(mColisao == 0){
                 remove_hash_enderecamento(th, func, chave);
              }else if (mColisao == 1){
                 remove_hash_encadeamento(th, func, chave);
@@ -118,10 +99,8 @@ int main(){
     
             break;
     
-            case 2: 
+            case 3: 
             printf("Insira o valor da busca: \n");
-            scanf("%d", &chave);
-
             if (scanf("%d", &chave) != 1) {
                 printf("\nErro: Entrada invalida.\n");
 
@@ -138,7 +117,7 @@ int main(){
 
             break;
 
-            case 3: 
+            case 4: 
              if( th == NULL){
                     printf("Tabela nao criada ainda!\n");
                     return 0;
@@ -155,7 +134,7 @@ int main(){
     
             break;
     
-            case 4: 
+            case 5: 
             if( th == NULL){
                 printf("Tabela nao criada ainda!\n");
                 return 0;
@@ -170,7 +149,7 @@ int main(){
             printf("Fator de carga da tabela: %.2f\n", fatorCarga(th));
             break;
     
-            case 5:
+            case 6:
             printf("Encerrando programa!\n");
             free(th);
             return 0;
