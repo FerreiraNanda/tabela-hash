@@ -196,6 +196,7 @@ int remove_hash_enderecamento(Tab_hash* th, int func, int chave){
             free(th-> itens[novaPosicao]);
             th -> itens[novaPosicao] = (struct insere*)REMOVIDO;
             th -> quantidade--;
+            printf("Remocao realizada!\n");
             return 1;
         }
         if(th -> itens[novaPosicao] == NULL){

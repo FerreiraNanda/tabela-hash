@@ -6,6 +6,7 @@ int main(){
 
     int tam, opcao, chave, func, mColisao, escolha;
     char arquivo[1024];
+    int elementos = 0;
     Tab_hash *th;
 
     printf("Escolha a funcao de dispersao:\n");
@@ -72,6 +73,11 @@ int main(){
         switch (opcao){
             case 1: 
 
+            if (elementos >= tam) { 
+                printf("Erro: A tabela atingiu o limite de elementos!\n");
+                break;
+            }
+
             printf("Digite a chave para insercao: \n");
             scanf("%d", &chave);
          
@@ -80,6 +86,7 @@ int main(){
             }else if (mColisao == 1){
                 insere_hash_encadeamento(th, func, chave);
             }
+            elementos++;
             break;
             case 2: 
             printf("Digite o valor para remocao: \n");
@@ -126,7 +133,6 @@ int main(){
                 printf("A impressao deve ser realizada para o metodo encademento!\n");
                 break;
             }
-                printf("Imprimindo tabela: \n");
                 imprime_enderecamento(th);
 
                 printf("Fator de carga da tabela: %.2f\n",fatorCarga(th));
