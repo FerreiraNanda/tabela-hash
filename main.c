@@ -10,7 +10,7 @@ int main(){
 
     printf("Escolha a funcao de dispersao:\n");
 
-    printf("0 - Divisao \n1 - Multiplicacao\n");
+    printf("0 - Multiplicacao \n1 - Divisao\n");
 
     if (scanf("%d", &func) != 1) {
         printf("Erro: Entrada invalida.\n");

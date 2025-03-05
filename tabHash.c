@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tabHash.h"
-#define REMOVIDO (struct insere*) -1
-#define A 0.61803339887
+#define REMOVIDO -1
 
 
 struct insere{
@@ -44,7 +43,9 @@ Tab_hash * cria(int tam){
 
 int mult(int chave, int tam){
 
-    float valor = chave * A;
+    const double A = 0.6180339887;
+
+    double valor = chave * A;
     valor = valor - (int) valor;
     return (int) (tam * valor);
 }
@@ -61,6 +62,7 @@ int duploHash (int chave, int i, int tam){
     if(h2 == 0){
         h2 = 1;
     }
+
     return((h1+ i*h2 ) & 0x7FFFFFFF) % tam;
 }
 
@@ -79,9 +81,7 @@ int insere_enderecamento_aberto(Tab_hash* th, int chave, int func){
         return 0;
     }
 
-    int i, posicao, novaPosicao;
-
-    posicao = (func == 0) ? mult(chave, th -> tam) : divisao(chave, th -> tam);
+    int i, novaPosicao;
 
     for(i = 0; i < th -> tam; i++){
         novaPosicao = duploHash(chave, i, th -> tam);
@@ -95,6 +95,7 @@ int insere_enderecamento_aberto(Tab_hash* th, int chave, int func){
             novo -> valor = -1;
             novo -> chave = chave;
             th ->itens[novaPosicao] = novo;
+            novo->prox = NULL;
             th->quantidade++;
              return 1;
         }
@@ -179,8 +180,6 @@ int insere_hash_arquivo_enderecamento( const char* nArquivo, Tab_hash** th, int 
     fclose(arquivo);
     return 1;
 
-    return 1;
-
 }
 
 int remove_hash_enderecamento(Tab_hash* th, int func, int chave){
@@ -195,7 +194,7 @@ int remove_hash_enderecamento(Tab_hash* th, int func, int chave){
 
         if(th -> itens[novaPosicao] != NULL && th -> itens[novaPosicao] -> chave == chave){
             free(th-> itens[novaPosicao]);
-            th -> itens[novaPosicao] = REMOVIDO;
+            th -> itens[novaPosicao] = (struct insere*)REMOVIDO;
             th -> quantidade--;
             return 1;
         }
@@ -240,35 +239,31 @@ int remove_hash_encadeamento(Tab_hash* th, int func, int chave){
     return 0;
 }
 
-
-int busca_hash_enderecamento(Tab_hash* th, int chave, int func){
-
-    if(th == NULL){
+int busca_hash_enderecamento(Tab_hash* th, int chave, int func) {
+    if (th == NULL) {
         printf("Operacao invalida!\n");
         return 0;
     }
+    int colisoes = 0;
+    int i;
 
-     int posicao = (func == 0) ? mult(chave, th -> tam) : divisao(chave, th -> tam);
-     int colisoes = 0;
-     int i;
+    for (i = 0; i < th->tam; i++) {
 
-        for(i = 0; i < th -> tam; i++){
-            
-            if(th -> itens[posicao] == NULL){
-                printf("Elemento nao encontrado!\n");
-                return 0;
-            }
-            if(th->itens[posicao] != REMOVIDO && th -> itens[posicao]-> chave == chave ){
-                printf("Elemento encontrado na posicao %d e com %d colisao(s).\n", posicao, colisoes);
-                return 1;
-            }
-            posicao = duploHash(chave, i + 1, th -> tam);
-            colisoes++;
-    
+        int novaPosicao = duploHash(chave, i, th->tam);
+
+        if (th->itens[novaPosicao] != NULL && th->itens[novaPosicao]->chave == chave && th->itens[novaPosicao]->chave != REMOVIDO) {
+            printf("Elemento encontrado na posicao %d com %d colisao(s).\n", novaPosicao, colisoes);
+            return 1;
         }
-        printf("Elemento nao encontrado");
-        return 0;
+        if (th->itens[novaPosicao] == NULL) {
+            break;
+        }
 
+        colisoes++;
+    }
+
+    printf("Elemento nao encontrado\n");
+    return 0;
 }
 
 int busca_hash_encadeamento(Tab_hash* th, int chave, int func){
@@ -309,7 +304,9 @@ void imprime_enderecamento (Tab_hash* th){
 
         if(th -> itens[i] == NULL){
             printf("NULL\n");
-        }else{
+        } else if ((struct insere*)th -> itens[i] == (struct insere*)REMOVIDO) { 
+            printf("NULL\n");
+        } else {
             printf("[%d]\n", th -> itens[i] -> chave);
         }
     }
