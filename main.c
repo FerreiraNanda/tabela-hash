@@ -47,6 +47,15 @@ int main(){
         printf("Digite o nome do arquivo:\n");
         scanf("%s", arquivo);
 
+        FILE *fp = fopen(arquivo, "r");
+        if (fscanf(fp, "%d", &tam) != 1) {
+            printf("Erro ao ler o tamanho da tabela no arquivo.\n");
+            fclose(fp);
+            return 1;
+        }
+
+        fclose(fp);
+
         if(mColisao == 0){
             insere_hash_arquivo_enderecamento(arquivo,&th, func);
          }else if (mColisao == 1){
@@ -88,22 +97,21 @@ int main(){
             }
             elementos++;
             break;
+            
             case 2: 
             printf("Digite o valor para remocao: \n");
-           
+            elementos--;
             if (scanf("%d", &chave) != 1) {
                 printf("\nErro: Entrada invalida.\n");
 
                 while (getchar() != '\n');
                 continue;
-
             }if(mColisao == 0){
                 remove_hash_enderecamento(th, func, chave);
              }else if (mColisao == 1){
                 remove_hash_encadeamento(th, func, chave);
              }
              printf("Fator de carga da tabela: %.2f\n",fatorCarga(th));
-    
             break;
     
             case 3: 

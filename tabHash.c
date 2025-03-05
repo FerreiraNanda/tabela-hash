@@ -86,7 +86,7 @@ int insere_enderecamento_aberto(Tab_hash* th, int chave, int func){
     for(i = 0; i < th -> tam; i++){
         novaPosicao = duploHash(chave, i, th -> tam);
 
-        if(th -> itens[novaPosicao] == NULL){
+        if(th->itens[novaPosicao] == NULL || th->itens[novaPosicao] == (struct insere*)REMOVIDO) {
             struct insere* novo = (struct insere*) malloc(sizeof(struct insere));
             if(novo == NULL){
                 printf("Erro ao alocar memoria!\n");
